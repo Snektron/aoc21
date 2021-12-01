@@ -1,19 +1,13 @@
-import "aoc"
-
 -- ==
 -- entry: part1 part2
 -- compiled random input { [10000000]i32 } auto output
 -- input @ input/01.in auto output
 
-entry part1 (input: []i32) =
-    input
-    |> in_pairs
-    |> map (uncurry (<))
+let solve [n] (off: i64) (input: [n]i32) =
+    tabulate (n - off) (\i -> input[i] < input[i + off])
     |> map i32.bool
-    |> reduce (+) 0
+    |> i32.sum
 
-entry part2 (input: []i32) =
-    input
-    |> in_triplets
-    |> map (\(a, b, c) -> a + b + c)
-    |> part1
+entry part1 = solve 1
+
+entry part2 = solve 3
