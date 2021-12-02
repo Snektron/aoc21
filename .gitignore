@@ -1,3 +1,6 @@
-data/
 *
+!input
+!input/**
+!scripts
+!scripts/**
 !*.fut
