@@ -30,13 +30,13 @@ let parse_int (input: []u8) ((offset, len): slice): i32 =
         in value * 10 - '0' + c
     in unsigned * sign
 
-let split_fields [n] (input: [n]u8) (sep: []u8) (fields: i64) ((offset, len): slice): [fields]slice =
+let split_fields (input: []u8) (sep: []u8) (fields: i64) ((offset, len): slice): [fields]slice =
     let is_sep o =
         any (== input[o + offset]) sep
     let is_field_start o =
-        o == 0 || !is_sep o && is_sep (o - 1)
+        o == 0 || (!is_sep o && is_sep (o - 1))
     let is_field_end o =
-        o == len - 1 || !is_sep o && is_sep (o + 1)
+        o == len - 1 || (!is_sep o && is_sep (o + 1))
     let get_offsets pred =
         loop (field, offsets) = (0, replicate fields 0) for i < len do
             if pred i
@@ -48,3 +48,15 @@ let split_fields [n] (input: [n]u8) (sep: []u8) (fields: i64) ((offset, len): sl
         map2 (-) field_ends field_starts
         |> map (+1)
         |> zip field_starts
+
+let split_regular_lines [n] (input: [n]u8): [][]u8 =
+    let lines =
+        map (== '\n') input
+        |> map i64.bool
+        |> i64.sum
+    let line_length = n / lines
+    let m = line_length - 1
+    in
+        input
+        |> unflatten lines line_length
+        |> map (\line -> line[:m])
