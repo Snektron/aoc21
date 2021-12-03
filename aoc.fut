@@ -9,7 +9,10 @@ let in_pairs [n] 't (as: [n]t): [](t, t) =
     let m = assert (n % 2 == 0) (n / 2)
     in zip (as[0::2] :> [m]t) (as[1::2] :> [m]t)
 
-let split_lines [n] (input: [n]u8): [](i32, i32) =
+-- Offset, length
+type slice = (i32, i32)
+
+let split_lines [n] (input: [n]u8): []slice =
     let endings =
         iota n
         |> filter (\i -> input[i] == '\n')
@@ -20,9 +23,28 @@ let split_lines [n] (input: [n]u8): [](i32, i32) =
         |> map (\(i, x) -> if i == 0 then x else x - endings[i - 1] - 1)
     in zip (map2 (-) endings lengths) lengths
 
-let parse_int (input: []u8) ((offset, len): (i32, i32)): i32 =
+let parse_int (input: []u8) ((offset, len): slice): i32 =
     let (offset, len, sign) = if input[offset] == '-' then (offset + 1, len - 1, -1i32) else (offset, len, 1)
     let unsigned = loop value = 0i32 for i < len do
         let c = i32.u8 input[offset + i]
         in value * 10 - '0' + c
     in unsigned * sign
+
+let split_fields [n] (input: [n]u8) (sep: []u8) (fields: i64) ((offset, len): slice): [fields]slice =
+    let is_sep o =
+        any (== input[o + offset]) sep
+    let is_field_start o =
+        o == 0 || !is_sep o && is_sep (o - 1)
+    let is_field_end o =
+        o == len - 1 || !is_sep o && is_sep (o + 1)
+    let get_offsets pred =
+        loop (field, offsets) = (0, replicate fields 0) for i < len do
+            if pred i
+                then (field + 1, offsets with [field] = i)
+                else (field, offsets)
+    let (_, field_starts) = get_offsets is_field_start
+    let (_, field_ends) = get_offsets is_field_end
+    in
+        map2 (-) field_ends field_starts
+        |> map (+1)
+        |> zip field_starts
