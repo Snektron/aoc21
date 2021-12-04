@@ -1,6 +1,9 @@
 let in_windows [n] 't (ws: i64) (as: [n]t): [][ws]t =
     tabulate (n - ws + 1) (\i -> as[i:i + ws] :> [ws]t)
 
+let in_chunks [n] 't (cs: i64) (as: [n]t): [][cs]t =
+    unflatten (n / cs) cs as
+
 let in_windows_of_pairs [n] 't (as: [n]t): [](t, t) =
     let m = n - 1
     in zip (as[:m] :> [m]t) (as[1:] :> [m]t)
@@ -8,6 +11,21 @@ let in_windows_of_pairs [n] 't (as: [n]t): [](t, t) =
 let in_pairs [n] 't (as: [n]t): [](t, t) =
     let m = assert (n % 2 == 0) (n / 2)
     in zip (as[0::2] :> [m]t) (as[1::2] :> [m]t)
+
+let replace [n] 't (p: t -> bool) (replacement: t) (as: [n]t): [n]t =
+    map (\x -> if p x then replacement else x) as
+
+let find_index [n] 't (p: t -> bool) (as: [n]t): i64 =
+    let f i j =
+        if i > 0 && j > 0 then i64.min i j
+        else i64.max i j
+    in
+        iota n
+        |> replace (\i -> !(p as[i])) (-1)
+        |> reduce_comm f (-1)
+
+let count_by [n] 't (p: t -> bool) (as: [n]t): i64 =
+    map p as |> map i64.bool |> i64.sum
 
 -- Offset, length
 type slice = (i32, i32)
@@ -34,9 +52,9 @@ let split_fields (input: []u8) (sep: []u8) (fields: i64) ((offset, len): slice):
     let is_sep o =
         any (== input[o + offset]) sep
     let is_field_start o =
-        o == 0 || (!is_sep o && is_sep (o - 1))
+        !is_sep o && (o == 0 || is_sep (o - 1))
     let is_field_end o =
-        o == len - 1 || (!is_sep o && is_sep (o + 1))
+        !is_sep o && (o == len - 1 || is_sep (o + 1))
     let get_offsets pred =
         loop (field, offsets) = (0, replicate fields 0) for i < len do
             if pred i
@@ -47,7 +65,7 @@ let split_fields (input: []u8) (sep: []u8) (fields: i64) ((offset, len): slice):
     in
         map2 (-) field_ends field_starts
         |> map (+1)
-        |> zip field_starts
+        |> zip (map (+ offset) field_starts)
 
 let split_regular_lines [n] (input: [n]u8): [][]u8 =
     let lines =
@@ -60,3 +78,4 @@ let split_regular_lines [n] (input: [n]u8): [][]u8 =
         input
         |> unflatten lines line_length
         |> map (\line -> line[:m])
+
