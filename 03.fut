@@ -1,4 +1,4 @@
-import "aoc"
+import "util/aoc"
 
 let contract_bits [n] (bits: [n]i32): i32 =
     iota n

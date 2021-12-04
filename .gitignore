@@ -3,4 +3,6 @@
 !input/**
 !scripts
 !scripts/**
+!util
+!util/**
 !*.fut

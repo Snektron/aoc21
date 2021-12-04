@@ -1,4 +1,4 @@
-import "aoc"
+import "util/aoc"
 
 let parse (input: []u8): []i32 =
     split_lines input
