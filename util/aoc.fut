@@ -78,4 +78,3 @@ let split_regular_lines [n] (input: [n]u8): [][]u8 =
         input
         |> unflatten lines line_length
         |> map (\line -> line[:m])
-
