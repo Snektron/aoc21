@@ -78,3 +78,11 @@ let split_regular_lines [n] (input: [n]u8): [][]u8 =
         input
         |> unflatten lines line_length
         |> map (\line -> line[:m])
+
+let histogram [n] (m: i64) (is: [n]i64): []i64 =
+    reduce_by_index
+        (replicate m 0)
+        (+)
+        0
+        is
+        (replicate n 1)
