@@ -1,5 +1,15 @@
 import "util/aoc"
 
+-- ==
+-- entry: part1
+-- input @ datasets/01.example.in output { 7i32 }
+-- input @ datasets/01.in output { 1374i32 }
+
+-- ==
+-- entry: part2
+-- input @ datasets/01.example.in output { 5i32 }
+-- input @ datasets/01.in output { 1418i32 }
+
 let parse (input: []u8): []i32 =
     split_lines input
     |> map (parse_int input)

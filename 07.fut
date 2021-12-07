@@ -1,6 +1,16 @@
 import "util/aoc"
 import "util/sorts/radix_sort"
 
+-- ==
+-- entry: part1
+-- input @ datasets/07.example.in output { 37i32 }
+-- input @ datasets/07.in output { 343468i32 }
+
+-- ==
+-- entry: part2
+-- input @ datasets/07.example.in output { 168i32 }
+-- input @ datasets/07.in output { 96086265i32 }
+
 let parse (input: []u8) =
     input
     |> replace (== ',') '\n'

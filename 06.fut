@@ -1,5 +1,15 @@
 import "util/aoc"
 
+-- ==
+-- entry: part1
+-- input @ datasets/06.example.in output { 5934i64 }
+-- input @ datasets/06.in output { 390011i64 }
+
+-- ==
+-- entry: part2
+-- input @ datasets/06.example.in output { 26984457539i64 }
+-- input @ datasets/06.in output { 1746710169834i64 }
+
 let solve (days: i32) (input: []u8) =
     input
     |> replace (== ',') '\n'

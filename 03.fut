@@ -1,5 +1,13 @@
 import "util/aoc"
 
+-- ==
+-- entry: part1
+-- input @ datasets/03.in output { 3885894i64 }
+
+-- ==
+-- entry: part2
+-- input @ datasets/03.in output { 4375225i32 }
+
 let contract_bits [n] (bits: [n]i16): i16 =
     map2
         (\c i -> c << i16.i64 (n - i - 1))

@@ -6,3 +6,5 @@
 !util
 !util/**
 !*.fut
+!datasets
+!datasets/**

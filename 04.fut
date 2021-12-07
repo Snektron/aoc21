@@ -1,5 +1,15 @@
 import "util/aoc"
 
+-- ==
+-- entry: part1
+-- input @ datasets/04.example.in output { 4512i32 }
+-- input @ datasets/04.in output { 58374i32 }
+
+-- ==
+-- entry: part2
+-- input @ datasets/04.example.in output { 1924i32 }
+-- input @ datasets/04.in output { 11377i32 }
+
 let parse (input: []u8) =
     let lines = input |> split_lines
     let num_nums = input[:i64.i32 lines[0].1] |> count_by (== ',') |> (+1)
