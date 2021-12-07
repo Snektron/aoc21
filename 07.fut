@@ -9,26 +9,23 @@ let parse (input: []u8) =
 
 entry part1 (input: []u8) =
     let crabs = parse input
+    let sort_bits = 1 + bit_width (i32.maximum crabs)
+    let crabs = radix_sort_int sort_bits i32.get_bit crabs
+    let cost target =
+        crabs
+        |> map (\crab -> i32.abs (crab - target))
+        |> i32.sum
     in
-        indices crabs
-        |> map i32.i64
-        |> map
-            (\i ->
-                crabs
-                |> map ((i-) >-> i32.abs)
-                |> i32.sum)
-        |> i32.minimum
+        i32.min (cost crabs[length crabs / 2]) (cost crabs[length crabs / 2 + 1])
 
 entry part2 (input: []u8) =
     let crabs = parse input
-    in
-        indices crabs
-        |> map i32.i64
-        |> map
-            (\i ->
-                crabs
-                |> map ((i-) >-> i32.abs)
-                |> map (\d -> d * (d + 1))
-                |> i32.sum)
-        |> i32.minimum
+    let target = (i32.sum crabs) / (i32.i64 (length crabs))
+    let cost target =
+        crabs
+        |> map (\crab -> i32.abs (crab - target))
+        |> map (\d -> d * (d + 1))
+        |> i32.sum
         |> (/2)
+    in
+        i32.min (cost target) (cost (target + 1))

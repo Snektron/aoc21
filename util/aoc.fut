@@ -89,3 +89,5 @@ let histogram [n] (m: i64) (is: [n]i64): []i64 =
 
 let replicate_2d 't (n: i64) (m: i64) (x: t): *[n][m]t =
     replicate (n * m) x |> unflatten n m
+
+let bit_width (x: i32): i32 = i32.num_bits - (i32.clz x)
