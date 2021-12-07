@@ -86,3 +86,6 @@ let histogram [n] (m: i64) (is: [n]i64): []i64 =
         0
         is
         (replicate n 1)
+
+let replicate_2d 't (n: i64) (m: i64) (x: t): *[n][m]t =
+    replicate (n * m) x |> unflatten n m
