@@ -2,10 +2,12 @@ import "util/aoc"
 
 -- ==
 -- entry: part1
+-- input @ datasets/03.example.in output { 198i64 }
 -- input @ datasets/03.in output { 3885894i64 }
 
 -- ==
 -- entry: part2
+-- input @ datasets/03.example.in output { 230i32 }
 -- input @ datasets/03.in output { 4375225i32 }
 
 let contract_bits [n] (bits: [n]i16): i16 =
@@ -29,9 +31,9 @@ let most_common_bit [n] (bit: i32) (words: [n]i16): i16 =
     in i16.bool (count * 2 >= i32.i64 n)
 
 entry part1 (input: []u8) =
-    let n = 12
+    let n = find_index (== '\n') input
     let words = parse n input
-    let x = tabulate n (\i -> most_common_bit (i32.i64 i) words) |> contract_bits
+    let x = tabulate n (\i -> most_common_bit (i32.i64 i) words) |> reverse |> contract_bits
     let x = i64.i16 x
     in x * (!x & ((1 << n) - 1))
 
@@ -43,6 +45,7 @@ let solve (x: i16) (n: i64) (words: []i16) =
     in i32.i16 (head sol)
 
 entry part2 (input: []u8) =
-    let n = 12
+    let n = find_index (== '\n') input
     let words = parse n input
     in (solve 0 n words) * (solve 1 n words)
+
