@@ -12,7 +12,6 @@ import "util/aoc"
 -- input @ datasets/08.example.2.in output {61229i64 }
 -- input @ datasets/08.in output { 987553i64 }
 
-
 let unique_nr_by_segments: []bool = [
     false, -- 0
     false, -- 1
@@ -45,20 +44,22 @@ let resolve_segments (fields: [14]u8) =
     let output = fields[10:] :> [4]u8
     let find_digit p = input[find_index_linear p input]
     let invert = (^0x7F)
-    let contains a b = a & b == b
-    let s1 = find_digit (\d -> u8.popc d == 2)
-    let s4 = find_digit (\d -> u8.popc d == 4)
-    let s7 = find_digit (\d -> u8.popc d == 3)
-    let s8 = find_digit (\d -> u8.popc d == 7)
-    let s9 = find_digit (\d -> d != s8 && (d `contains` (s4 | s7)))
-    let s6 = find_digit (\d -> d != s8 && (d `contains` (invert s7)))
-    let s0 = find_digit (\d -> d != s8 && (d `contains` (s1 | invert s9)))
-    let s5 = find_digit (\d -> d != s8 && u8.popc (d ^ s6) == 1)
-    let s2 = find_digit (\d -> d != s8 && d != s0 && (d `contains` (s6 ^ s9)))
-    let s3 = (s2 & s5) | s1
-    let segments_by_digits = [s0, s1, s2, s3, s4, s5, s6, s7, s8, s9]
+    let x = reduce (^) 0 input
+    let s = loop s = replicate 10 0 for i < 10 do
+        match u8.popc input[i]
+        case 2 -> s with [1] = input[i]
+        case 3 -> s with [7] = input[i]
+        case 4 -> s with [4] = input[i]
+        case 7 -> s with [8] = input[i]
+        case _ -> s
+    let s = s with [0] = invert s[4] | s[1] | invert x
+    let s = s with [3] = x | s[7]
+    let s = s with [6] = invert s[1] | x
+    let s = s with [9] = s[7] | s[4] | x
+    let s = s with [5] = s[6] & s[9]
+    let s = s with [2] = invert s[5] | (s[3] & invert s[1])
     in output
-        |> map (\c -> find_index_linear (==c) segments_by_digits)
+        |> map (\c -> find_index_linear (==c) s)
         |> map2 (\i c -> c * pows10[i]) (iota 4)
         |> i64.sum
 
