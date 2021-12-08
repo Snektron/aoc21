@@ -24,6 +24,10 @@ let find_index [n] 't (p: t -> bool) (as: [n]t): i64 =
         |> replace (\i -> !(p as[i])) (-1)
         |> reduce_comm f (-1)
 
+let find_index_linear [n] 't (p: t -> bool) (as: [n]t): i64 =
+    loop index = -1 for i < n do
+        if index < 0 && p as[i] then i else index
+
 let count_by [n] 't (p: t -> bool) (as: [n]t): i64 =
     map p as |> map i64.bool |> i64.sum
 
