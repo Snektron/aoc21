@@ -30,7 +30,7 @@ entry part1 (input: []u8) =
 
 let solve2 [n][m] (g: [n][m]u8) =
     let mask = map (map (== '9')) g
-    let iter (parents: [n][m]i64): [n][m]i64 =
+    let iter parents =
         tabulate_2d
             n
             m
@@ -40,13 +40,14 @@ let solve2 [n][m] (g: [n][m]u8) =
                 let c = if j == 0 || mask[i, j - 1] then -1 else parents[i, j - 1]
                 let d = if j == m - 1 || mask[i, j + 1] then -1 else parents[i, j + 1]
                 let x = if mask[i, j] then -1 else parents[i, j]
-                in if mask[i, j] then -1 else i64.maximum [a, b, c, d, x])
+                in if mask[i, j] then -1 else i16.maximum [a, b, c, d, x])
     in
-        tabulate_2d n m (\i j -> i * m + j)
+        tabulate_2d n m (\i j -> i16.i64 (i * m + j))
         |> iterate
             (bit_width (i32.i64 (4 * n * m)))
             iter
         |> flatten
+        |> map i64.i16
         |> histogram (n * m)
         |> map (\x -> [x, 0, 0])
         |> reduce_comm
