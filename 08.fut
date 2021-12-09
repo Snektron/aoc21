@@ -42,7 +42,6 @@ let field_to_segment (input: []u8) ((off, len): (i32, i32)): u8 =
 let resolve_segments (fields: [14]u8) =
     let input = fields[:10]
     let output = fields[10:] :> [4]u8
-    let find_digit p = input[find_index_linear p input]
     let invert = (^0x7F)
     let x = reduce (^) 0 input
     let s = loop s = replicate 10 0 for i < 10 do
