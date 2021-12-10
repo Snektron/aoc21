@@ -126,10 +126,12 @@ let part2_compute_score [n] (brackets: [n]u8) (m: [n]i32) =
         (\b i -> if i == -1 then get_closing b else 0)
         brackets
         m
-    |> filter (!= 0)
-    |> foldr
-        (\x acc -> acc * 5 + part2_score x)
-        0
+    |> map part2_score
+    |> map (\x -> (x, if x == 0 then 1 else 5))
+    |> reduce
+        (\(a, ax) (b, bx) -> (b * ax + a, ax * bx))
+        (0, 1)
+    |> (.0)
 
 entry part2 (input: []u8) =
     let scores =
