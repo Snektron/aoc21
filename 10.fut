@@ -70,11 +70,11 @@ let match_brackets [n] (brackets: [n]u8) = -- [n]i32
             let ty = stack_diff b
             in match ty
             case 1 ->
-                if i == m then -1i32
+                if i == m || perm[j + 1] == -1 then -1i32
                 else if is_closing brackets[perm[j + 1]] then perm[j + 1]
                 else -1
             case -1 ->
-                if i == 0 then -1
+                if i == 0 || perm[j - 1] == -1 then -1
                 else if is_opening brackets[perm[j - 1]] then perm[j - 1]
                 else -1
             case 0 -> -1)
