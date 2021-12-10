@@ -95,3 +95,11 @@ let replicate_2d 't (n: i64) (m: i64) (x: t): *[n][m]t =
     replicate (n * m) x |> unflatten n m
 
 let bit_width (x: i32): i32 = i32.num_bits - (i32.clz x)
+
+let bit_width_64 (x: i64): i32 = i64.num_bits - (i64.clz x)
+
+let invert [n] (as: [n]i32): [n]i32 =
+    scatter
+        (replicate n (-1i32))
+        (as |> map i64.i32)
+        (iota n |> map i32.i64)
