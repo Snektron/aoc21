@@ -1,6 +1,5 @@
 import "util/aoc"
 
-
 -- ==
 -- entry: part1
 -- input @ datasets/11.example.in output { 1656i32 }
