@@ -28,7 +28,7 @@ let parse [n] (input: [n]u8) =
         scatter_2d
             (replicate_2d (m.0 + 1) (m.1 + 1) false)
             coords
-            (map (\_ -> true) coords)
+            (map (const true) coords)
         |> transpose
     let folds =
         folds
