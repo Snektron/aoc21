@@ -85,10 +85,11 @@ let polymerize [n] (steps: i32) (rules: [n][n]i64) (template: [n][n]i64) =
         template
 
 let solve (steps: i32) (input: []u8) =
-    let (rules, template) = parse input
-    let polymer = polymerize steps rules template
-    let counts = count_occurances polymer
-    let counts = filter (>0) counts
+    let counts =
+        parse input
+        |> uncurry (polymerize steps)
+        |> count_occurances
+        |> filter (>0)
     in i64.maximum counts - i64.minimum counts
 
 entry part1 = solve 10
