@@ -83,6 +83,11 @@ let split_regular_lines [n] (input: [n]u8): [][]u8 =
         |> unflatten lines line_length
         |> map (\line -> line[:m])
 
+let fetch_field (input: []u8) ((off, len): (i32, i32)): []u8 =
+    (0..<len)
+    |> map (+off)
+    |> map (\i -> input[i])
+
 let histogram [n] (m: i64) (is: [n]i64): []i64 =
     reduce_by_index
         (replicate m 0)
@@ -103,3 +108,23 @@ let invert [n] (as: [n]i32): [n]i32 =
         (replicate n (-1i32))
         (as |> map i64.i32)
         (iota n |> map i32.i64)
+
+let interlace [n][m] 't (as: [n]t) (bs: [m]t): []t =
+    map
+        (\i -> if i % 2 == 0 then as[i / 2] else bs[i / 2])
+        (iota (n + m))
+
+let reduce_by_index_2d [n][m][k] 't
+    (dest: *[n][m]t)
+    (f: t -> t -> t)
+    (ne: t)
+    (is: [k](i64, i64))
+    (as: [k]t):
+    *[n][m]t =
+        reduce_by_index
+            (flatten dest)
+            f
+            ne
+            (map (\(i, j) -> i * m + j) is)
+            as
+        |> unflatten n m
