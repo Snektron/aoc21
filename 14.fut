@@ -40,11 +40,11 @@ let parse (input: []u8) =
             outputs
     in (rules, template_mat)
 
-let pair_insertion (rules: [26][26]i64) (polymer: [26][26]i64) =
+let pair_insertion [n] (rules: [n][n]i64) (polymer: [n][n]i64) =
     let (is, vs) =
         tabulate_2d
-            26
-            26
+            n
+            n
             (\i j ->
                 let x = polymer[i, j]
                 let k = rules[i, j]
@@ -53,17 +53,17 @@ let pair_insertion (rules: [26][26]i64) (polymer: [26][26]i64) =
         |> unzip
     in
         reduce_by_index_2d
-            (replicate_2d 26 26 0i64)
+            (replicate_2d n n 0i64)
             (+)
             0
             is
             vs
 
-let count_occurances (polymer: [26][26]i64) =
+let count_occurances [n] (polymer: [n][n]i64) =
     let (is, vs) =
         tabulate_2d
-            26
-            26
+            n
+            n
             (\i j ->
                 let x = polymer[i, j]
                 in [(i, x), (j, x)])
@@ -71,14 +71,14 @@ let count_occurances (polymer: [26][26]i64) =
         |> unzip
     in
         reduce_by_index
-            (replicate 26 0i64)
+            (replicate n 0i64)
             (+)
             0
             is
             vs
         |> map (\a -> (a + 1) / 2)
 
-let polymerize (steps: i32) (rules: [26][26]i64) (template: [26][26]i64) =
+let polymerize [n] (steps: i32) (rules: [n][n]i64) (template: [n][n]i64) =
     iterate
         steps
         (pair_insertion rules)
