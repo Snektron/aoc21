@@ -1,5 +1,15 @@
 import "util/aoc"
 
+-- ==
+-- entry: part1
+-- input @ datasets/15.example.in output { 40i64 }
+-- input @ datasets/15.in output { 435i64 }
+
+-- ==
+-- entry: part2
+-- input @ datasets/15.example.in output { 315i64 }
+-- input @ datasets/15.in output { 2842i64 }
+
 let parse (input: []u8) =
     split_regular_lines input
     |> map (map (\c -> c - '0'))
