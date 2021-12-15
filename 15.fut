@@ -42,11 +42,15 @@ let bellman_ford [n][m] (w: [n][m]i64) =
 
     let distance = replicate_2d n m 9999i64
     let distance = distance with [0, 0] = 0
-    in
-        iterate
-            (i32.i64 (n * m))
-            relax
-            distance
+    let (distance, _) =
+        loop (distance, changed) = (distance, true) while changed do
+            let new_distance = relax distance
+            let same =
+                map2 (map2 (==)) distance new_distance
+                |> flatten
+                |> reduce (&&) true
+            in (new_distance, !same)
+    in distance
 
 entry part1 (input: []u8) =
     parse input
