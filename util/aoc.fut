@@ -17,7 +17,7 @@ let replace [n] 't (p: t -> bool) (replacement: t) (as: [n]t): [n]t =
 
 let find_index [n] 't (p: t -> bool) (as: [n]t): i64 =
     let f i j =
-        if i > 0 && j > 0 then i64.min i j
+        if i >= 0 && j >= 0 then i64.min i j
         else i64.max i j
     in
         iota n
@@ -128,3 +128,17 @@ let reduce_by_index_2d [n][m][k] 't
             (map (\(i, j) -> i * m + j) is)
             as
         |> unflatten n m
+
+let split_lines_pad_regular (pad: u8) (input: []u8) =
+    let lines = split_lines input
+    let m =
+        lines
+        |> map (.1)
+        |> i32.maximum
+        |> i64.i32
+    in map
+        (\(off, len) ->
+            tabulate
+                m
+                (\i -> if i < i64.i32 len then input[i64.i32 off + i] else pad))
+        lines
