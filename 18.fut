@@ -175,7 +175,6 @@ entry part2 (input: []u8) =
                     concat_to k depths[off_a:off_a + len_a] depths[off_b:off_b + len_b]
                     |> map (\x -> if x >= 0 then x + 1 else x)
                 let (digits', depths') = snail_reduce digits' depths'
-                let mag = magnitude digits' depths'
-                in mag)
+                in magnitude digits' depths')
         |> flatten
         |> i32.maximum

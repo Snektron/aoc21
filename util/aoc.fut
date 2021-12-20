@@ -34,16 +34,18 @@ let count_by [n] 't (p: t -> bool) (as: [n]t): i64 =
 -- Offset, length
 type slice = (i32, i32)
 
-let split_lines [n] (input: [n]u8): []slice =
+let split_by [n] (c: u8) (input: [n]u8): []slice =
     let endings =
         iota n
-        |> filter (\i -> input[i] == '\n')
+        |> filter (\i -> input[i] == c)
         |> map i32.i64
     let lengths =
         endings
         |> zip (indices endings)
         |> map (\(i, x) -> if i == 0 then x else x - endings[i - 1] - 1)
     in zip (map2 (-) endings lengths) lengths
+
+let split_lines [n] (input: [n]u8): []slice = split_by '\n' input
 
 let parse_int (input: []u8) ((offset, len): slice): i32 =
     let (offset, len, sign) = if input[offset] == '-' then (offset + 1, len - 1, -1i32) else (offset, len, 1)
@@ -142,3 +144,7 @@ let split_lines_pad_regular (pad: u8) (input: []u8) =
                 m
                 (\i -> if i < i64.i32 len then input[i64.i32 off + i] else pad))
         lines
+
+let cartesian [n][m] 't 'u 'v (f: t -> u -> v) (as: [n]t) (bs: [m]u) =
+    map (\a -> map (f a) bs) as
+    |> flatten
