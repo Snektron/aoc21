@@ -131,6 +131,21 @@ let reduce_by_index_2d [n][m][k] 't
             as
         |> unflatten n m
 
+let reduce_by_index_3d [n][m][k][l] 't
+    (dest: *[n][m][k]t)
+    (f: t -> t -> t)
+    (ne: t)
+    (is: [l](i64, i64, i64))
+    (as: [l]t):
+    *[n][m][k]t =
+        reduce_by_index
+            (flatten_3d dest)
+            f
+            ne
+            (map (\(x, y, z) -> x * k * m + y * m + z) is)
+            as
+        |> unflatten_3d n m k
+
 let split_lines_pad_regular (pad: u8) (input: []u8) =
     let lines = split_lines input
     let m =
