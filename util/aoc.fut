@@ -101,6 +101,9 @@ let histogram [n] (m: i64) (is: [n]i64): []i64 =
 let replicate_2d 't (n: i64) (m: i64) (x: t): *[n][m]t =
     replicate (n * m) x |> unflatten n m
 
+let replicate_3d 't (n: i64) (m: i64) (k: i64) (x: t): *[n][m][k]t =
+    replicate (n * m * m) x |> unflatten_3d n m k
+
 let bit_width (x: i32): i32 = i32.num_bits - (i32.clz x)
 
 let bit_width_64 (x: i64): i32 = i64.num_bits - (i64.clz x)
@@ -163,3 +166,7 @@ let split_lines_pad_regular (pad: u8) (input: []u8) =
 let cartesian [n][m] 't 'u 'v (f: t -> u -> v) (as: [n]t) (bs: [m]u) =
     map (\a -> map (f a) bs) as
     |> flatten
+
+let all2 [n] 't 'u (f: t -> u -> bool) (as: [n]t) (bs: [n]u) =
+    map2 f as bs
+    |> reduce (&&) true
