@@ -59,20 +59,5 @@ let solve (f: i64 -> (i64, i64)) (input: []u8) =
     |> i64.sum
 
 
-entry part1 (input: []u8) =
-    solve
-        (\y ->
-            if y < 0 then
-                (9, 9 + y)
-            else
-                (9 - y, 9))
-        input
-
-entry part2 (input: []u8) =
-    solve
-        (\y ->
-            if y < 0 then
-                (-y + 1, 1)
-            else
-                (1, y + 1))
-        input
+entry part1 = solve (\y -> if y < 0 then (9, 9 + y) else (9 - y, 9))
+entry part2 = solve (\y -> if y < 0 then (-y + 1, 1) else (1, y + 1))
