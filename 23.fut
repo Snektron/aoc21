@@ -7,33 +7,33 @@ module state = {
 
     let invalid = -1i64
 
-    let move_wt: []i64 = [1, 1, 10, 10, 100, 100, 1000, 1000]
-
-    let score_base = 40i64
-    let first_move_base = 32i64
+    let score_base = 48i64
+    let first_move_base = 40i64
+    let bits_per_node = 5i64
+    let node_mask = 0x1Fi64
 
     let encode (nodes: [8]i64) =
         nodes
-        |> map2 (\i v -> v << (i * 4)) (indices nodes)
+        |> map2 (\i v -> v << (i * bits_per_node)) (indices nodes)
         |> reduce (|) 0
 
     -- get the current node for amphipod i in [A, A, B, B, C, C, D, D]
     let get (i: i64) (s: t): i64 =
-        (s >> (i * 4)) & 0xF
+        (s >> (i * bits_per_node)) & node_mask
 
     let move (i: i64) (dst: i64) (s: t): t =
-        let s = s & !(0xF << (i * 4))
-        in s | (dst << (i * 4)) | (1 << (i + first_move_base))
+        let s = s & !(node_mask << (i * bits_per_node))
+        in s | (dst << (i * bits_per_node)) | (1 << (i + first_move_base))
 
     let get_score (s: t): i64 =
         ((s >> score_base) & 0xFFFF)
 
     let add_score (score: i64) (s: t): t =
         let score = score + get_score s
-        in if score > 20_000 then
+        in if score > 0xFFFE then
             invalid
         else
-            (s & 0xFF_FFFF_FFFF) | (score << score_base)
+            (s & 0xFFFF_FFFF_FFFF) | (score << score_base)
 
     let decode (s: t): [8]i64 =
         map (\i -> get i s) (iota 8)
